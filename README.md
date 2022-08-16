@@ -1,4 +1,4 @@
-# Metadata-Extractor
+# MetadataExtractor
 A simple gui for extracting all meta and xml data from a batch of PDFs and organizing the data into a CSV.
 
 ![Capture](https://user-images.githubusercontent.com/108289013/184893025-ce1a4f9e-1c95-4b31-9d29-d3fc633a5022.PNG)
