@@ -11,7 +11,7 @@ A simple gui for extracting all meta and xml data from a batch of PDFs and organ
 * **Relative Hyperlink:** if true the hyperlink will be the relative location between the search directory and the output directory -- useful for sharing the data between file systems -- otherwise will be the full file path. 
 
 ## Usage ##
-Download latest version from [Named Link](https://github.com/henrystern/Metadata-Extractor/releases/latest "releases")
+Download [latest version](https://github.com/henrystern/Metadata-Extractor/releases/latest "releases")
 Select your options and click run to generate the CSV.
 
 ## Tips ##
