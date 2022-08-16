@@ -15,5 +15,5 @@ A simple gui for extracting all meta and xml data from a batch of PDFs and organ
 * Select your options and click run to generate the CSV.
 
 ## Tips ##
-* To avoid encoding errors I recommend importing the CSV into an Excel sheet using Excel's "from text/CSV" tool
+* To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
 * Clean up the appearance of the Excel sheet by find and replacing (CTRL+H) the string "null" to an empty string ""
