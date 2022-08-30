@@ -16,8 +16,8 @@ A simple gui for extracting all meta and xml data from a batch of PDFs and organ
 
 ## Tips ##
 * To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
-* To activate the hyperlinks after importing run this macro in excel:
-  ```
+* After importing run this macro in Excel to activate the hyperlinks:
+  ```VBA
   Sub activateHyperlinks()
     
     Dim Table_Name As String
