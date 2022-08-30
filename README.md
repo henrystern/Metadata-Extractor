@@ -16,3 +16,20 @@ A simple gui for extracting all meta and xml data from a batch of PDFs and organ
 
 ## Tips ##
 * To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
+* To activate the hyperlinks after importing run this macro in excel:
+  ```
+  Sub activateHyperlinks()
+    
+    Dim Table_Name As String
+    Table_Name = "PDF_Metadata" 'replace PDF_Metadata with the name of your table
+    
+    Dim Column_Header As String
+    Column_Header = "File Path" 'replace File Path with name of column
+    
+    Dim c As Range
+    For Each c In Range(Table_Name & "[" & Column_Header & "]")
+        c.Value = c.Value
+    Next c
+
+  End Sub
+  ```
