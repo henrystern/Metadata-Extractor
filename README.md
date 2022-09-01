@@ -16,7 +16,7 @@ A simple gui for extracting all meta and xml data from a batch of PDFs and organ
 
 ## Tips ##
 * To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
-* After importing run this macro in Excel to activate the hyperlinks:
+* After importing run this script in Excel to activate the hyperlinks:
   ```VBA
   Sub activateHyperlinks()
     
@@ -33,3 +33,4 @@ A simple gui for extracting all meta and xml data from a batch of PDFs and organ
 
   End Sub
   ```
+ * The hyperlinks won't work if the path is very long due to limitations in Excel. Paths can be shortened to DOS format using the FSO.ShortPath property in VBA.
