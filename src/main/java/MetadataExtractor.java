@@ -5,7 +5,15 @@ import org.apache.jempbox.xmp.XMPSchemaPDF;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentCatalog;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.PDPageTree;
 import org.apache.pdfbox.pdmodel.common.PDMetadata;
+import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
+import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,19 +31,17 @@ import java.nio.file.Paths;
 
 public class MetadataExtractor {
 
-    private static final JTextArea journal = new JTextArea(); //where messages are output
+    private static final JTextArea journal = new JTextArea(); // where messages are output
     private static final JProgressBar progress = new JProgressBar();
 
     private static String[] PDF_List = new String[0];
 
     public static void main(String[] args) {
 
-        System.out.println("Running");
-
         JFrame sfc = new JFrame("PDF Metadata Extractor");
 
         sfc.setSize(800, 600);
-        sfc.setPreferredSize(new Dimension(800,600));
+        sfc.setPreferredSize(new Dimension(800, 600));
         sfc.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         Container c = sfc.getContentPane();
@@ -45,7 +51,6 @@ public class MetadataExtractor {
         JLabel directoryLabel = new JLabel("Choose search directory: ");
         final JTextField chosenDirectory = new JTextField(39);
         JButton dirButton = new JButton("...");
-
 
         JPanel panel2 = new JPanel();
         JLabel outputLabel = new JLabel("Choose output location: ");
@@ -62,7 +67,6 @@ public class MetadataExtractor {
         JButton openCSV = new JButton("Open CSV");
 
         JButton openDir = new JButton("Open search directory");
-
 
         JPanel panel4 = new JPanel();
         journal.setColumns(65);
@@ -104,20 +108,20 @@ public class MetadataExtractor {
         recursive.addItemListener(e -> {
             File dir = new File(chosenDirectory.getText());
             PDF_List = listPDF(Objects.requireNonNull(dir.listFiles()), recursive.isSelected());
-            journal.setText("Found " + PDF_List.length + " PDFs\nPress run to extract metadata"); //refresh pdf number for recursive option
+            journal.setText("Found " + PDF_List.length + " PDFs\nPress run to extract metadata"); // refresh pdf number
+                                                                                                  // for recursive
+                                                                                                  // option
         });
-
 
         dirButton.addActionListener(ae -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setMultiSelectionEnabled(true);
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-            if (chosenDirectory.getText() != null){
+            if (chosenDirectory.getText() != null) {
                 chooser.setCurrentDirectory(new File(chosenDirectory.getText()));
             }
             Action details = chooser.getActionMap().get("viewTypeDetails");
             details.actionPerformed(null);
-
 
             int option = chooser.showOpenDialog(sfc);
             if (option == JFileChooser.APPROVE_OPTION) {
@@ -135,21 +139,21 @@ public class MetadataExtractor {
 
         });
 
-
         outButton.addActionListener(ae -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setMultiSelectionEnabled(false);
             chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
             Action details = chooser.getActionMap().get("viewTypeDetails");
-            if (chosenDirectory.getText() != null){
+            if (chosenDirectory.getText() != null) {
                 chooser.setCurrentDirectory(new File(chosenDirectory.getText()));
             }
             details.actionPerformed(null);
 
-
             int option = chooser.showOpenDialog(sfc);
             if (option == JFileChooser.APPROVE_OPTION) {
-                chosenOutput.setText(chooser.getSelectedFile() + "\\PDF_Metadata.csv"); //could add default file name option and change string to variable
+                chosenOutput.setText(chooser.getSelectedFile() + "\\PDF_Metadata.csv"); // could add default file name
+                                                                                        // option and change string to
+                                                                                        // variable
             }
 
         });
@@ -159,6 +163,7 @@ public class MetadataExtractor {
             try {
                 Desktop.getDesktop().open(new File(chosenOutput.getText()));
             } catch (IOException e) {
+                printJournal("Error while opening CSV");
                 throw new RuntimeException(e);
             }
         });
@@ -168,6 +173,7 @@ public class MetadataExtractor {
             try {
                 Desktop.getDesktop().open(new File(chosenDirectory.getText()));
             } catch (IOException e) {
+                printJournal("error while opening output directory");
                 throw new RuntimeException(e);
             }
         });
@@ -177,12 +183,17 @@ public class MetadataExtractor {
             if (PDF_List.length > 0) {
                 String[][] Metadata_Array;
                 try {
-                    Metadata_Array = generate(PDF_List, hyperlink.isSelected());
-                    if(hyperlink.isSelected() && relative_link.isSelected()){
-                        Path first = Paths.get(chosenDirectory.getText()); Path second = Paths.get(chosenOutput.getText());
+                    Metadata_Array = generate(PDF_List, hyperlink.isSelected(), chosenDirectory.getText());
+                    if (hyperlink.isSelected() && relative_link.isSelected()) {
+                        Path first = Paths.get(chosenDirectory.getText());
+                        Path second = Paths.get(chosenOutput.getText());
                         String relativePath = String.valueOf(second.relativize(first));
-                        for(int i=0; i < Metadata_Array.length; i++){
-                            Metadata_Array[i][0] = Metadata_Array[i][0].replace((chosenDirectory.getText() + "\\"), relativePath.substring(0, relativePath.length() - 2)); //substring removes the final /.. in relativePath which escapes from the file name in chosenOutput
+                        for (int i = 0; i < Metadata_Array.length; i++) {
+                            Metadata_Array[i][0] = Metadata_Array[i][0].replace((chosenDirectory.getText() + "\\"),
+                                    relativePath.substring(0, relativePath.length() - 2)); // substring removes the
+                                                                                           // final /.. in relativePath
+                                                                                           // which escapes from the
+                                                                                           // file name in chosenOutput
                         }
                     }
                 } catch (IOException e) {
@@ -214,25 +225,22 @@ public class MetadataExtractor {
                     throw new RuntimeException(e);
                 }
 
-
-
                 progress.setString("\nFinished");
             } else {
                 journal.append("\nNo PDFs to analyze");
             }
-
 
         });
 
         sfc.setVisible(true);
     }
 
-    public static void printJournal(String msg){
-        journal.append("\n"+msg);
+    public static void printJournal(String msg) {
+        journal.append("\n" + msg);
         journal.update(journal.getGraphics());
     }
 
-    public static void progress(int current, int total){
+    public static void progress(int current, int total) {
         float pct = (float) current / total;
         pct = pct * 100;
         progress.setValue((int) pct);
@@ -246,12 +254,12 @@ public class MetadataExtractor {
         String[] directory_list = {};
 
         for (File file : files) {
-            if (file.isDirectory()) { //list subdirectories in folder
-                if(recursive){
+            if (file.isDirectory()) { // list subdirectories in folder
+                if (recursive) {
 
                     String[] New_Dir = new String[directory_list.length + 1];
                     int i;
-                    for(i = 0; i < directory_list.length; i++) {
+                    for (i = 0; i < directory_list.length; i++) {
                         New_Dir[i] = directory_list[i];
                     }
 
@@ -267,7 +275,7 @@ public class MetadataExtractor {
 
                     String[] New_PDF = new String[pdf_list.length + 1];
                     int i;
-                    for(i = 0; i < pdf_list.length; i++) {
+                    for (i = 0; i < pdf_list.length; i++) {
                         New_PDF[i] = pdf_list[i];
                     }
 
@@ -280,17 +288,20 @@ public class MetadataExtractor {
         }
 
         int i;
-        for(i = 0; i < directory_list.length; i++){ //for all subdirectories repeat process and append the pdfs in that subdirectory to the previous layer's pdf list
+        for (i = 0; i < directory_list.length; i++) { // for all subdirectories repeat process and append the pdfs in
+                                                      // that subdirectory to the previous layer's pdf list
             File file = new File(directory_list[i]);
 
-            String[] pdfs_in_subdirectory = listPDF(Objects.requireNonNull(file.listFiles()), true); //if this is called recursive must be true
+            String[] pdfs_in_subdirectory = listPDF(Objects.requireNonNull(file.listFiles()), true); // if this is
+                                                                                                     // called recursive
+                                                                                                     // must be true
 
             String[] New_PDF = new String[pdf_list.length + pdfs_in_subdirectory.length];
             int j;
-            for(j = 0; j < pdf_list.length; j++) {
+            for (j = 0; j < pdf_list.length; j++) {
                 New_PDF[j] = pdf_list[j];
             }
-            for(j = 0; j < pdfs_in_subdirectory.length; j++) {
+            for (j = 0; j < pdfs_in_subdirectory.length; j++) {
                 New_PDF[j + pdf_list.length] = pdfs_in_subdirectory[j];
             }
             pdf_list = New_PDF;
@@ -299,35 +310,37 @@ public class MetadataExtractor {
         return pdf_list;
     }
 
-    public static String[][] generate(String[] PDF_List, boolean hyperlink) throws IOException {
+    public static String[][] generate(String[] PDF_List, boolean hyperlink, String Dir) throws IOException {
 
-        String[][] Metadata_Array = { {"File Path",
-                "Title","Author","Creator","Creation Date","Modification Date","Producer","Subject","Keywords","Trapped",
-                "Title","Description","Creators","Dates","Contributors","Coverage","Description Languages","Format","Identifier","Languages","Publishers","Relationships","Rights","Rights Languages","Source","Subjects","Title Languages","Types","About","Element",
-                "Keywords","PDF Version","PDF Producer","About","Element",
-                "Title","Create Date","Modify Date","Metadata Date","Creator Tool","Advisories","Base URL","Identifiers","Label","Nickname","Rating","Thumbnail","Thumbnail Languages","About","Element"
+        String[][] Metadata_Array = { { "File Path",
+                "Title", "Author", "Creator", "Creation Date", "Modification Date", "Producer", "Subject", "Keywords",
+                "Trapped",
+                "Title", "Description", "Creators", "Dates", "Contributors", "Coverage", "Description Languages",
+                "Format", "Identifier", "Languages", "Publishers", "Relationships", "Rights", "Rights Languages",
+                "Source", "Subjects", "Title Languages", "Types", "About", "Element",
+                "Keywords", "PDF Version", "PDF Producer", "About", "Element",
+                "Title", "Create Date", "Modify Date", "Metadata Date", "Creator Tool", "Advisories", "Base URL",
+                "Identifiers", "Label", "Nickname", "Rating", "Thumbnail", "Thumbnail Languages", "About", "Element"
         } };
-
-
 
         for (String PDF : PDF_List) {
             PDDocument document;
 
             try {
                 document = PDDocument.load(new File(PDF));
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 printJournal("Open file error on " + PDF);
                 continue;
             }
 
-            //PDF = PDF.replaceAll("[^\\x00-\\x7F]"," "); //this replaces special characters to stop excel opening the csv with improper encoding. Not necessary if you use Excel 'import from csv' which is recommended.
+            // PDF = PDF.replaceAll("[^\\x00-\\x7F]"," "); //this replaces special
+            // characters to stop excel opening the csv with improper encoding. Not
+            // necessary if you use Excel 'import from csv' which is recommended.
 
             String location = PDF;
             if (hyperlink) {
                 location = "=hyperlink(\"\"" + PDF + "\"\")";
             }
-
 
             PDDocumentCatalog catalog = document.getDocumentCatalog();
 
@@ -336,7 +349,6 @@ public class MetadataExtractor {
             XMPSchemaDublinCore dc = null;
             XMPSchemaPDF pdf = null;
             XMPSchemaBasic basic = null;
-
 
             PDDocumentInformation information = document.getDocumentInformation();
 
@@ -347,8 +359,7 @@ public class MetadataExtractor {
                     dc = metadata.getDublinCoreSchema();
                     pdf = metadata.getPDFSchema();
                     basic = metadata.getBasicSchema();
-                }
-                catch (IOException e) {
+                } catch (IOException e) {
                     printJournal("XML parse error on " + PDF);
                     document.close();
                 }
@@ -371,9 +382,9 @@ public class MetadataExtractor {
                 progress(i, PDF_List.length);
             }
 
-            //location
+            // location
             PDF_Metadata[i][0] = display(location);
-            //document information
+            // document information
             PDF_Metadata[i][1] = display(information.getTitle());
             PDF_Metadata[i][2] = display(information.getAuthor());
             PDF_Metadata[i][3] = display(information.getCreator());
@@ -383,7 +394,7 @@ public class MetadataExtractor {
             PDF_Metadata[i][7] = display(information.getSubject());
             PDF_Metadata[i][8] = display(information.getKeywords());
             PDF_Metadata[i][9] = display(information.getTrapped());
-            //Dublin Core
+            // Dublin Core
             if (dc != null) {
                 PDF_Metadata[i][10] = display(dc.getTitle());
                 PDF_Metadata[i][11] = display(dc.getDescription());
@@ -406,7 +417,7 @@ public class MetadataExtractor {
                 PDF_Metadata[i][28] = display(dc.getAbout());
                 PDF_Metadata[i][29] = display(dc.getElement());
             }
-            //PDF
+            // PDF
             if (pdf != null) {
                 PDF_Metadata[i][30] = display(pdf.getKeywords());
                 PDF_Metadata[i][31] = display(pdf.getPDFVersion());
@@ -414,7 +425,7 @@ public class MetadataExtractor {
                 PDF_Metadata[i][33] = display(pdf.getAbout());
                 PDF_Metadata[i][34] = display(pdf.getElement());
             }
-            //Basic
+            // Basic
             if (basic != null) {
                 PDF_Metadata[i][35] = display(basic.getTitle());
                 PDF_Metadata[i][36] = display(basic.getCreateDate());
@@ -435,6 +446,50 @@ public class MetadataExtractor {
 
             Metadata_Array = PDF_Metadata;
 
+            //TODO add condition so that this section only runs if there is a folder called pdf_metadata_output or something
+            // this sections adds a page summarizing the pdf doc info to the start of each
+            // pdf this conveniently labels everything for printing
+            PDPage Metadata_Page = new PDPage();
+
+            PDFont font = PDType1Font.HELVETICA_BOLD;
+
+            // write the metadata to the page
+            PDPageContentStream contentStream = new PDPageContentStream(document, Metadata_Page);
+
+            for (int item = 0; item < 7; item++) {
+                contentStream.beginText();
+                contentStream.setFont(font, 12);
+                contentStream.newLineAtOffset(25, 700 - (25 * item));
+                if (item == 0) {
+                    contentStream.showText(Metadata_Array[0][item].toString() + ": " + PDF);
+                    PDRectangle position = new PDRectangle();
+                    PDAnnotationLink txtLink = new PDAnnotationLink();
+                    PDActionURI action = new PDActionURI();
+                    action.setURI("file://" + PDF.replace("\\", "/"));
+                    txtLink.setAction(action);
+                    position.setLowerLeftX(20);
+                    position.setLowerLeftY(690);
+                    position.setUpperRightX(590);
+                    position.setUpperRightY(720);
+                    txtLink.setAction(action);
+                    txtLink.setRectangle(position);
+                    Metadata_Page.getAnnotations().add(txtLink);
+                    System.out.println(PDF);
+                } else {
+                    contentStream.showText(Metadata_Array[0][item].toString() + ":  " + PDF_Metadata[i][item]);
+                }
+                contentStream.endText();
+            }
+
+            // Make sure that the content stream is closed:
+            contentStream.close();
+
+            // add page to start of pdf
+            PDPageTree pages = document.getDocumentCatalog().getPages();
+            pages.insertBefore(Metadata_Page, pages.get(0));
+
+            document.save(Dir + "/pdf_metadata_output/" + "output (" + i + ").pdf");
+
             document.close();
         }
 
@@ -442,47 +497,45 @@ public class MetadataExtractor {
 
     }
 
-    private static String format(Object o)
-    {
+    private static String format(Object o) {
 
-        if (o instanceof Calendar)
-        {
-            Calendar cal = (Calendar)o;
+        if (o instanceof Calendar) {
+            Calendar cal = (Calendar) o;
             return DateFormat.getDateInstance().format(cal.getTime());
-        }
-        else
-        {
+        } else {
             return o.toString();
         }
     }
 
-    private static String display(Object value) //String title,
+    private static String display(Object value) // String title,
     {
-        if (value != null)
-        {
+        if (value != null) {
             return format(value);
-        }
-        else
-        {
+        } else {
             return "null";
         }
     }
 
-    private static String listToString(List<?> list)
-    {
-        if (list == null)
-        {
-            return "null"; //not technically null but easy enough to replace with ctrl+h in Excel
+    private static String listToString(List<?> list) {
+        if (list == null) {
+            return "null"; // not technically null but easy enough to replace with ctrl+h in Excel
         }
 
         StringBuilder listString = new StringBuilder();
 
-        for (Object item : list ) {
-            if (item == null){
+        int i = 1;
+
+        for (Object item : list) {
+            if (item == null) {
                 continue;
             }
             item = format(item);
-            listString.append(",").append(item);
+            if (i == 1) {
+                listString.append(item);
+            } else {
+                listString.append(",").append(item);
+            }
+            i++;
         }
 
         return listString.toString();
