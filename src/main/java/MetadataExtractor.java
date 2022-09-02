@@ -323,6 +323,11 @@ public class MetadataExtractor {
                 "Identifiers", "Label", "Nickname", "Rating", "Thumbnail", "Thumbnail Languages", "About", "Element"
         } };
 
+        Boolean output_requested = false;
+        if (new File(Dir + "/pdf_metadata_output/").exists()) {
+            output_requested = true;
+        }
+
         for (String PDF : PDF_List) {
             PDDocument document;
 
@@ -446,49 +451,55 @@ public class MetadataExtractor {
 
             Metadata_Array = PDF_Metadata;
 
-            //TODO add condition so that this section only runs if there is a folder called pdf_metadata_output or something
             // this sections adds a page summarizing the pdf doc info to the start of each
-            // pdf this conveniently labels everything for printing
-            PDPage Metadata_Page = new PDPage();
+            // pdf
+            // this conveniently labels everything for printing
+            // will only run if the folder "pdf_metadata_output" exists in the search
+            // directory
 
-            PDFont font = PDType1Font.HELVETICA_BOLD;
+            if (output_requested) {
+                PDPage Metadata_Page = new PDPage();
 
-            // write the metadata to the page
-            PDPageContentStream contentStream = new PDPageContentStream(document, Metadata_Page);
+                PDFont font = PDType1Font.HELVETICA_BOLD;
 
-            for (int item = 0; item < 7; item++) {
-                contentStream.beginText();
-                contentStream.setFont(font, 12);
-                contentStream.newLineAtOffset(25, 700 - (25 * item));
-                if (item == 0) {
-                    contentStream.showText(Metadata_Array[0][item].toString() + ": " + PDF);
-                    PDRectangle position = new PDRectangle();
-                    PDAnnotationLink txtLink = new PDAnnotationLink();
-                    PDActionURI action = new PDActionURI();
-                    action.setURI("file://" + PDF.replace("\\", "/"));
-                    txtLink.setAction(action);
-                    position.setLowerLeftX(20);
-                    position.setLowerLeftY(690);
-                    position.setUpperRightX(590);
-                    position.setUpperRightY(720);
-                    txtLink.setAction(action);
-                    txtLink.setRectangle(position);
-                    Metadata_Page.getAnnotations().add(txtLink);
-                    System.out.println(PDF);
-                } else {
-                    contentStream.showText(Metadata_Array[0][item].toString() + ":  " + PDF_Metadata[i][item]);
+                // write the metadata to the page
+                PDPageContentStream contentStream = new PDPageContentStream(document, Metadata_Page);
+
+                for (int item = 0; item < 7; item++) {
+                    contentStream.beginText();
+                    contentStream.setFont(font, 12);
+                    contentStream.newLineAtOffset(25, 700 - (25 * item));
+                    if (item == 0) {
+                        contentStream.showText(Metadata_Array[0][item].toString() + ": " + PDF);
+
+                        // hyperlink to original file -- this will always be the absolute path
+                        PDRectangle position = new PDRectangle();
+                        PDAnnotationLink txtLink = new PDAnnotationLink();
+                        PDActionURI action = new PDActionURI();
+                        action.setURI("file://" + PDF.replace("\\", "/"));
+                        txtLink.setAction(action);
+                        position.setLowerLeftX(20);
+                        position.setLowerLeftY(690);
+                        position.setUpperRightX(590);
+                        position.setUpperRightY(720);
+                        txtLink.setAction(action);
+                        txtLink.setRectangle(position);
+                        Metadata_Page.getAnnotations().add(txtLink);
+
+                    } else {
+                        contentStream.showText(Metadata_Array[0][item].toString() + ":  " + PDF_Metadata[i][item]);
+                    }
+                    contentStream.endText();
                 }
-                contentStream.endText();
+
+                contentStream.close();
+
+                // add page to start of pdf
+                PDPageTree pages = document.getDocumentCatalog().getPages();
+                pages.insertBefore(Metadata_Page, pages.get(0));
+
+                document.save(Dir + "/pdf_metadata_output/" + "output (" + i + ").pdf");
             }
-
-            // Make sure that the content stream is closed:
-            contentStream.close();
-
-            // add page to start of pdf
-            PDPageTree pages = document.getDocumentCatalog().getPages();
-            pages.insertBefore(Metadata_Page, pages.get(0));
-
-            document.save(Dir + "/pdf_metadata_output/" + "output (" + i + ").pdf");
 
             document.close();
         }
