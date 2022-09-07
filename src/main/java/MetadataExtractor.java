@@ -18,6 +18,9 @@ import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 import netscape.javascript.JSException;
 
 import javax.swing.*;
+import javax.swing.plaf.ColorChooserUI;
+import javax.swing.text.AttributeSet.FontAttribute;
+
 import java.awt.*;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -50,26 +53,18 @@ public class MetadataExtractor {
         sfc.setPreferredSize(new Dimension(800, 600));
         sfc.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         sfc.setResizable(false);
-        sfc.getContentPane().setBackground(new Color(70,80,70));
-        try { 
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        journal.setLineWrap(true);
-        journal.setWrapStyleWord(true);
 
         Container c = sfc.getContentPane();
         c.setLayout(new FlowLayout());
 
         JPanel panel1 = new JPanel();
         JLabel directoryLabel = new JLabel("Choose search directory: ");
+
         final JTextField chosenDirectory = new JTextField(39);
         JButton dirButton = new JButton("...");
 
         JPanel panel2 = new JPanel();
-        JLabel outputLabel = new JLabel("Choose output location: ");
+        JLabel outputLabel = new JLabel("Choose output location:   ");
         final JTextField chosenOutput = new JTextField(39);
         JButton outButton = new JButton("...");
 
@@ -120,6 +115,33 @@ public class MetadataExtractor {
         c.add(panel3);
         c.add(panel4);
         c.add(panel5);
+
+
+        // Styling
+
+        Color background = new Color(70,80,70);
+        Color foreground = new Color(255,230,250);
+        c.setBackground(background);
+        try { 
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        journal.setLineWrap(true);
+        journal.setWrapStyleWord(true);
+
+        JPanel[] panels = {panel1, panel2, panel3, panel4, panel5};
+        for (JPanel jPanel : panels) {
+            jPanel.setBackground(background);
+        }
+
+        JLabel[] labels = {directoryLabel, outputLabel};
+        for (JLabel jLabel : labels) {
+            jLabel.setFont(new Font("Courier", Font.PLAIN, 18));
+            jLabel.setForeground(foreground);
+
+        }
 
         recursive.addItemListener(e -> {
             File dir = new File(chosenDirectory.getText());
@@ -302,7 +324,6 @@ public class MetadataExtractor {
                 }
             }
         }
-
         int i;
         for (i = 0; i < directory_list.length; i++) { // for all subdirectories repeat process and append the pdfs in
                                                       // that subdirectory to the previous layer's pdf list
