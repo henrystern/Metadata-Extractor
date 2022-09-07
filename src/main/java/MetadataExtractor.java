@@ -15,6 +15,8 @@ import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.interactive.action.PDActionURI;
 import org.apache.pdfbox.pdmodel.interactive.annotation.PDAnnotationLink;
 
+import netscape.javascript.JSException;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedWriter;
@@ -35,6 +37,7 @@ import java.sql.Date;
 public class MetadataExtractor {
 
     private static final JTextArea journal = new JTextArea(); // where messages are output
+    private static final JScrollPane sp = new JScrollPane(journal);
     private static final JProgressBar progress = new JProgressBar();
 
     private static String[] PDF_List = new String[0];
@@ -46,6 +49,16 @@ public class MetadataExtractor {
         sfc.setSize(800, 600);
         sfc.setPreferredSize(new Dimension(800, 600));
         sfc.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        sfc.setResizable(false);
+        sfc.getContentPane().setBackground(new Color(70,80,70));
+        try { 
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        journal.setLineWrap(true);
+        journal.setWrapStyleWord(true);
 
         Container c = sfc.getContentPane();
         c.setLayout(new FlowLayout());
@@ -96,7 +109,7 @@ public class MetadataExtractor {
         panel3.add(relative_link);
         panel3.add(runButton);
 
-        panel4.add(journal);
+        panel4.add(sp);
 
         panel5.add(progress);
         panel5.add(openCSV);
@@ -397,6 +410,7 @@ public class MetadataExtractor {
             PDF_Metadata[i][2] = display(information.getAuthor());
             PDF_Metadata[i][3] = display(information.getCreator());
             PDF_Metadata[i][4] = display(information.getCreationDate());
+
             PDF_Metadata[i][5] = display(information.getModificationDate());
             PDF_Metadata[i][6] = display(information.getProducer());
             PDF_Metadata[i][7] = display(information.getSubject());
@@ -516,7 +530,7 @@ public class MetadataExtractor {
         if (o instanceof Calendar) {
             Calendar cal = (Calendar) o;
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-            sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+            sdf.setTimeZone(TimeZone.getTimeZone("GMT-05:00"));
             return sdf.format(cal.getTime());
         } else {
             return o.toString();
