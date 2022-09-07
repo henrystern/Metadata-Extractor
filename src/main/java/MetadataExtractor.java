@@ -397,7 +397,6 @@ public class MetadataExtractor {
             PDF_Metadata[i][2] = display(information.getAuthor());
             PDF_Metadata[i][3] = display(information.getCreator());
             PDF_Metadata[i][4] = display(information.getCreationDate());
-            System.out.println(information.getCreationDate());
             PDF_Metadata[i][5] = display(information.getModificationDate());
             PDF_Metadata[i][6] = display(information.getProducer());
             PDF_Metadata[i][7] = display(information.getSubject());
@@ -516,7 +515,6 @@ public class MetadataExtractor {
 
         if (o instanceof Calendar) {
             Calendar cal = (Calendar) o;
-
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
             sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
             return sdf.format(cal.getTime());
