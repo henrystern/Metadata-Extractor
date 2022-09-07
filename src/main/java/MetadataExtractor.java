@@ -121,6 +121,8 @@ public class MetadataExtractor {
 
         Color background = new Color(70,80,70);
         Color foreground = new Color(255,230,250);
+        Font labelfont = new Font("Courier", Font.PLAIN, 18);
+        Font contentfont = new Font("Courier", Font.PLAIN, 14);
         c.setBackground(background);
         try { 
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -138,9 +140,18 @@ public class MetadataExtractor {
 
         JLabel[] labels = {directoryLabel, outputLabel};
         for (JLabel jLabel : labels) {
-            jLabel.setFont(new Font("Courier", Font.PLAIN, 18));
+            jLabel.setFont(labelfont);
             jLabel.setForeground(foreground);
+        }
 
+        JButton[] jButtons = {dirButton, outButton, runButton, openCSV, openDir};
+        for (JButton jButton : jButtons) {
+            jButton.setFont(contentfont);
+        }
+
+        JCheckBox[] jCheckBoxs = {recursive, hyperlink, relative_link};
+        for (JCheckBox jCheckBox : jCheckBoxs) {
+            jCheckBox.setFont(contentfont);
         }
 
         recursive.addItemListener(e -> {
