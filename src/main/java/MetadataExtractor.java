@@ -123,8 +123,8 @@ public class MetadataExtractor {
 
         Color background = new Color(70,80,70);
         Color foreground = new Color(255,230,250);
-        Font labelfont = new Font("Courier", Font.PLAIN, 18);
-        Font contentfont = new Font("Courier", Font.PLAIN, 14);
+        Font labelfont = new Font("sans-serif", Font.PLAIN, 18);
+        Font contentfont = new Font("sans-serif", Font.PLAIN, 14);
         c.setBackground(background);
         try { 
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
