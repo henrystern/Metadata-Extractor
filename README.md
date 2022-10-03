@@ -18,6 +18,7 @@ A simple gui for extracting all meta and xmp data from a batch of PDFs and organ
 * Clone repository
 * Open repository directory in VS Code
 * Select Run > Run Without Debugging (CTRL+F5)
+
 This is easier than installing java manually as VS Code gathers dependencies and prompts the correct installation.
 
 ## Tips ##
