@@ -14,6 +14,12 @@ A simple gui for extracting all meta and xmp data from a batch of PDFs and organ
 * Download the [latest version](https://github.com/henrystern/Metadata-Extractor/releases/latest "releases")
 * Select your options and click run to generate the CSV.
 
+## Run From Source ##
+* Clone repository
+* Open repository directory in VS Code
+* Select Run > Run Without Debugging (CTRL+F5)
+This is easier than installing java manually as VS Code gathers dependencies and prompts the correct installation.
+
 ## Tips ##
 * To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
 * After importing run this script in Excel to activate the hyperlinks:
