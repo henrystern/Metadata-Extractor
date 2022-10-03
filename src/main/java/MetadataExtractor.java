@@ -57,6 +57,7 @@ public class MetadataExtractor {
         Container c = sfc.getContentPane();
         c.setLayout(new FlowLayout());
 
+        // Labels
         JPanel panel1 = new JPanel();
         JLabel directoryLabel = new JLabel("Choose search directory: ");
 
@@ -79,6 +80,7 @@ public class MetadataExtractor {
 
         JButton openDir = new JButton("Open search directory");
 
+        // Layout
         JPanel panel4 = new JPanel();
         journal.setColumns(65);
         journal.setRows(20);
@@ -133,6 +135,7 @@ public class MetadataExtractor {
         journal.setLineWrap(true);
         journal.setWrapStyleWord(true);
 
+        // build GUI
         JPanel[] panels = {panel1, panel2, panel3, panel4, panel5};
         for (JPanel jPanel : panels) {
             jPanel.setBackground(background);
@@ -154,6 +157,7 @@ public class MetadataExtractor {
             jCheckBox.setFont(contentfont);
         }
 
+        // Listeners 
         recursive.addItemListener(e -> {
             File dir = new File(chosenDirectory.getText());
             PDF_List = listPDF(Objects.requireNonNull(dir.listFiles()), recursive.isSelected());
@@ -298,6 +302,7 @@ public class MetadataExtractor {
     }
 
     public static String[] listPDF(File[] files, boolean recursive) {
+        // I didn't know about DFS when i wrote this
         String[] pdf_list = {};
 
         String[] directory_list = {};
@@ -320,7 +325,10 @@ public class MetadataExtractor {
 
             } else {
 
-                if (file.getPath().substring(file.getPath().length() - 3).equalsIgnoreCase("pdf")) {
+                if (file.getPath().substring(file.getPath().length() - 3).equalsIgnoreCase("pdf")) { // this limits the metadata 
+                                                                                                     // gathering to PDFs 
+                                                                                                     // Could expand to collect at least 
+                                                                                                     // doc info from all filetypes
 
                     String[] New_PDF = new String[pdf_list.length + 1];
                     int i;
@@ -502,7 +510,8 @@ public class MetadataExtractor {
 
             // this sections adds a page summarizing the pdf doc info to the start of each
             // pdf
-            // this conveniently labels everything for printing
+            // this conveniently labels the metadata on the first page of each document
+            // it is useful for printing and physically reviewing metadata patterns.
             // will only run if the folder "pdf_metadata_output" exists in the search
             // directory
 
@@ -580,7 +589,7 @@ public class MetadataExtractor {
 
     private static String listToString(List<?> list) {
         if (list == null) {
-            return "null"; // not technically null but easy enough to replace with ctrl+h in Excel
+            return "null"; // not technically null but imported into Excel as null with the import tool
         }
 
         StringBuilder listString = new StringBuilder();
