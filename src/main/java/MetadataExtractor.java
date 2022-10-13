@@ -72,7 +72,7 @@ public class MetadataExtractor {
         JPanel panel3 = new JPanel();
         JCheckBox recursive = new JCheckBox("Search subdirectories?", true);
         JCheckBox hyperlink = new JCheckBox("Hyperlink to PDF path?", true);
-        JCheckBox relative_link = new JCheckBox("Relative hyperlink?", true);
+        JCheckBox relative_path = new JCheckBox("Relative path", true);
 
         JButton runButton = new JButton("Run");
 
@@ -103,7 +103,7 @@ public class MetadataExtractor {
 
         panel3.add(recursive);
         panel3.add(hyperlink);
-        panel3.add(relative_link);
+        panel3.add(relative_path);
         panel3.add(runButton);
 
         panel4.add(sp);
@@ -152,7 +152,7 @@ public class MetadataExtractor {
             jButton.setFont(contentfont);
         }
 
-        JCheckBox[] jCheckBoxs = {recursive, hyperlink, relative_link};
+        JCheckBox[] jCheckBoxs = {recursive, hyperlink, relative_path};
         for (JCheckBox jCheckBox : jCheckBoxs) {
             jCheckBox.setFont(contentfont);
         }
@@ -237,7 +237,7 @@ public class MetadataExtractor {
                 String[][] Metadata_Array;
                 try {
                     Metadata_Array = generate(PDF_List, hyperlink.isSelected(), chosenDirectory.getText());
-                    if (hyperlink.isSelected() && relative_link.isSelected()) {
+                    if (relative_path.isSelected()) {
                         Path first = Paths.get(chosenDirectory.getText());
                         Path second = Paths.get(chosenOutput.getText());
                         String relativePath = String.valueOf(second.relativize(first));
