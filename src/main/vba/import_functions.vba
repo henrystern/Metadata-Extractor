@@ -51,7 +51,7 @@ Sub shortenHyperlinks()
     For Each c In Range(Table_Name & "[" & Column_Header & "]")
         On Error Resume Next
         
-        If Len(c.Value) > 20 Then 'if path is longer than this the link wont work 
+        If Len(c.Value) > 204 Then 'if path is longer than this the link wont work 
                                   'if long shorten to unreadable
             Dim file_path As String
             file_path = c.Value
