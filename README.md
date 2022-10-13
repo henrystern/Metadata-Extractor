@@ -1,5 +1,5 @@
 # Metadata to CSV
-A simple GUI for extracting all meta and XMP data from a batch of PDFs and organizing the data into a CSV.
+A simple GUI for extracting all document properties and XMP data from a batch of PDFs and organizing the data into a CSV.
 
 ![Capture](https://user-images.githubusercontent.com/108289013/184893025-ce1a4f9e-1c95-4b31-9d29-d3fc633a5022.PNG)
 
@@ -10,7 +10,7 @@ A simple GUI for extracting all meta and XMP data from a batch of PDFs and organ
 * **Hyperlink to PDF path:** if true output the file path as an excel formatted hyperlink rather than plaintext
 * **Relative Hyperlink:** if true the hyperlink will be the relative location between the search directory and the output directory -- useful for sharing the data between file systems -- otherwise will be the full file path. 
 
-## Usage ##
+## Install ##
 * Download the [latest version](https://github.com/henrystern/Metadata-Extractor/releases/latest "releases")
 * Select your options and click run to generate the CSV.
 
@@ -19,7 +19,7 @@ A simple GUI for extracting all meta and XMP data from a batch of PDFs and organ
 * Open repository directory in VS Code
 * Select Run > Run Without Debugging (CTRL+F5)
 
-This is easier than installing java manually as VS Code gathers dependencies and prompts the correct installation.
+This is probably easier than installing java manually as VS Code gathers dependencies and prompts the correct installation.
 
 ## Tips ##
 * To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
@@ -40,4 +40,4 @@ This is easier than installing java manually as VS Code gathers dependencies and
 
   End Sub
   ```
- * The hyperlinks won't work if the path is very long due to limitations in Excel. Paths can be shortened to DOS format using the FSO.ShortPath property in VBA.
+ * The hyperlinks won't work if the path is very long due to limitations in Excel. Paths can be shortened to DOS format using the FSO.ShortPath property in VBA. (see /src/main/vba)
