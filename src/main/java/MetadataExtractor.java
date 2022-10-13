@@ -297,7 +297,7 @@ public class MetadataExtractor {
         float pct = (float) current / total;
         pct = pct * 100;
         progress.setValue((int) pct);
-        progress.setString((int) pct + "%");
+        progress.setString((int) pct + "% (" + current + "/" + total + ")");
         progress.update(progress.getGraphics());
     }
 
