@@ -8,7 +8,7 @@ A simple GUI for extracting all document properties and XMP data from a batch of
 * **Output Location:** The folder and filename where the CSV will be stored
 * **Search Subdirectories:** if true recurse through the subdirectories of the search directory otherwise stay on the first level
 * **Hyperlink to PDF path:** if true output the file path as an excel formatted hyperlink rather than plaintext
-* **Relative Hyperlink:** if true the hyperlink will be the relative location between the search directory and the output directory -- useful for sharing the data between file systems -- otherwise will be the full file path. 
+* **Relative path:** if true the output path to the file will be the relative location between the search directory and the output directory -- useful for sharing the data between file systems -- otherwise will be the full file path. 
 
 ## Install ##
 * Download the [latest version](https://github.com/henrystern/Metadata-Extractor/releases/latest "releases")
