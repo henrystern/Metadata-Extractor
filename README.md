@@ -1,7 +1,7 @@
 # Metadata to CSV
 A simple GUI for extracting all document properties and XMP data from a batch of PDFs and organizing the data into a CSV.
 
-![Capture](https://user-images.githubusercontent.com/108289013/184893025-ce1a4f9e-1c95-4b31-9d29-d3fc633a5022.PNG)
+![Capture](https://user-images.githubusercontent.com/108289013/195872328-1a7a0ec1-7ceb-451f-be50-0992962b7762.PNG)
 
 ## Options ##
 * **Search Directory:** Where the PDFs are stored
@@ -12,14 +12,12 @@ A simple GUI for extracting all document properties and XMP data from a batch of
 
 ## Install ##
 * Download the [latest version](https://github.com/henrystern/Metadata-Extractor/releases/latest "releases")
-* Select your options and click run to generate the CSV.
 
-## Run From Source ##
+## Build From Source (Requires Maven and Java) ##
 * Clone repository
-* Open repository directory in VS Code
-* Select Run > Run Without Debugging (CTRL+F5)
-
-This is probably easier than installing java manually as VS Code gathers dependencies and prompts the correct installation.
+* Open repository directory in terminal
+* run command `mvn package`
+* run command `java -jar ./target/MetadataExtractor-jar-with-dependencies.jar com.henrystern.MetadataExtractor`
 
 ## Tips ##
 * To avoid encoding errors, import the CSV into an Excel sheet using Excel's "from text/CSV" tool
@@ -40,4 +38,4 @@ This is probably easier than installing java manually as VS Code gathers depende
 
   End Sub
   ```
- * The hyperlinks won't work if the path is very long due to limitations in Excel. Paths can be shortened to DOS format using the FSO.ShortPath property in VBA. (see /src/main/vba)
+ * The hyperlinks won't work if the path is very long due to limitations in Excel. Paths can be shortened to DOS format using the FSO.ShortPath property in VBA. (see /resources/vba)
