@@ -39,3 +39,4 @@ A simple GUI for extracting all document properties and XMP data from a batch of
   End Sub
   ```
  * The hyperlinks won't work if the path is very long due to limitations in Excel. Paths can be shortened to DOS format using the FSO.ShortPath property in VBA. (see /resources/vba)
+ * If you need to print the PDFs you can create a directory inside the search directory called "pdf_metadata_output" and each pdf will be copied to that directory with a front page summarizing it's metadata.
